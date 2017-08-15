@@ -1,1 +1,1 @@
-# pxc-kubernetes
+# Percona XtraDB Cluster (PXC) on Kubernetes
