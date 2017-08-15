@@ -45,7 +45,7 @@ spec:
         command:
         - /usr/local/bin/bash
         - -c
-        - "NODES=${CLUSTER_JOIN//,/ }; SUCCESS=false; for NODE in $NODES; do if timeout -t 3 nc $NODE 3306 < /dev/null; then SUCCESS=true; break; fi; done; if $SUCCESS; then echo \"export CLUSTER_JOIN=$CLUSTER_JOIN\" > /env/env; else if [ \"$(echo $POD_NAME | cut -d'-' -f2)\" -eq \"0\" ]; then echo \"export CLUSTER_JOIN=\" > /env/env; else exit 1; fi; fi;"
+        - "NODES=${CLUSTER_JOIN//,/ }; SUCCESS=false; for NODE in $NODES; do if nc -z -w3 $NODE 3306; then SUCCESS=true; break; fi; sleep 1; done; if $SUCCESS; then echo \"export CLUSTER_JOIN=$CLUSTER_JOIN\" > /env/env; else if [ \"$(echo $POD_NAME | cut -d'-' -f2)\" -eq \"0\" ]; then echo \"export CLUSTER_JOIN=\" > /env/env; else exit 1; fi; fi;"
         volumeMounts:
         - name: env-store
           mountPath: /env
