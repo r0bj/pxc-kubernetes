@@ -9,7 +9,7 @@ Kubernetes can ease the deployment and management of PXC cluster by leveraging s
 - Dynamic Storage Provisioning
 - Stateful Applications
 
-There are deploymemnts variants with different storage:
+There are deploymemnts variants with different storage options:
 - host path storage (mount host directory inside container)
 - dynamically provisioned storage (using custom storage class already defined in the cluster)
 - dynamically provisioned local storage (using local storage class)
