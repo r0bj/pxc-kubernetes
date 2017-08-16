@@ -89,7 +89,7 @@ spec:
         - name: CLUSTER_NAME
           value: pxc-cluster1
         - name: MYSQL_ROOT_PASSWORD
-          value: J4DKgaZAoFRWmsS2
+          value: secretpassword
       volumes:
       - name: mysql-data
         hostPath:
