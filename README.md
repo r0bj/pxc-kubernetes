@@ -8,6 +8,7 @@ Kubernetes can ease the deployment and management of PXC cluster by leveraging s
 - Pod Disruption Budgets
 - Dynamic Storage Provisioning
 - Stateful Applications
+- Init Containers
 
 ## Setup
 There are deploymemnts variants with different storage options:
