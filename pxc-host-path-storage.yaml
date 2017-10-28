@@ -15,12 +15,15 @@ spec:
     app: pxc
 
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
   name: pxc
   namespace: ops
 spec:
+  selector:
+    matchLabels:
+      app: pxc
   serviceName: pxc
   replicas: 3
   template:
@@ -45,7 +48,25 @@ spec:
         command:
         - /usr/local/bin/bash
         - -c
-        - "NODES=${CLUSTER_JOIN//,/ }; SUCCESS=false; for NODE in $NODES; do if nc -z -w3 $NODE 3306; then SUCCESS=true; break; fi; sleep 1; done; if $SUCCESS; then echo \"export CLUSTER_JOIN=$CLUSTER_JOIN\" > /env/env; else if [ \"$(echo $POD_NAME | cut -d'-' -f2)\" -eq \"0\" ]; then echo \"export CLUSTER_JOIN=\" > /env/env; else exit 1; fi; fi;"
+        - |
+          NODES=${CLUSTER_JOIN//,/ }
+          SUCCESS=false
+          for NODE in $NODES; do
+            if nc -z -w3 $NODE 3306; then
+              SUCCESS=true
+              break
+            fi
+            sleep 1
+          done
+          if $SUCCESS; then
+            echo "export CLUSTER_JOIN=$CLUSTER_JOIN" > /env/env
+          else
+            if [ "$(echo $POD_NAME | cut -d'-' -f2)" -eq "0" ]; then
+              echo "export CLUSTER_JOIN=" > /env/env
+            else
+              exit 1
+            fi
+          fi
         volumeMounts:
         - name: env-store
           mountPath: /env
@@ -62,7 +83,10 @@ spec:
         command:
         - /bin/bash
         - -c
-        - chown mysql:mysql /var/lib/mysql; source /env/env; exec /entrypoint.sh
+        - |
+          chown mysql:mysql /var/lib/mysql
+          source /env/env
+          exec /entrypoint.sh
         ports:
         - containerPort: 3306
           name: mysql
